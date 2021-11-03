@@ -1,0 +1,18 @@
+{
+  "name": "org.pcsoft.unity.animation",
+  "version": "1.0.0",
+  "displayName": "Animation Extension",
+  "description": "Provide a builder for animations based on Coroutines",
+  "unity": "2021.1",
+  "keywords": [
+    "toolbar",
+    "build",
+    "tooling",
+    "compile"
+  ],
+  "author": {
+    "name": "Pfeiffer C Soft",
+    "email": "kl3in3rhack3r@gmail.com",
+    "url": "https://github.com/KleinerHacker/unity-animation"
+  }
+}
