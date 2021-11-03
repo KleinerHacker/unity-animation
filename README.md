@@ -33,3 +33,11 @@ var runner = AnimationBuilder.Create(this)
 
 runner.Stop(); //Stop the animation
 ```
+
+If you create the `AnimationBuilder` you can setup the time is used:
+
+```c#
+AnimationBuilder.Create(this, AnimationType.Unscaled)
+```
+
+The default is _scaled time_.
