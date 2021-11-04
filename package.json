@@ -5,10 +5,10 @@
   "description": "Provide a builder for animations based on Coroutines",
   "unity": "2021.1",
   "keywords": [
-    "toolbar",
-    "build",
+    "animation",
     "tooling",
-    "compile"
+    "extension",
+    "builder"
   ],
   "author": {
     "name": "Pfeiffer C Soft",
