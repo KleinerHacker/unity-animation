@@ -1,6 +1,6 @@
 {
   "name": "org.pcsoft.animation",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "Animation Extension",
   "description": "Provide a builder for animations based on Coroutines",
   "unity": "2021.1",
