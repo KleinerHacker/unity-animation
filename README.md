@@ -4,6 +4,11 @@ Extended Animation Framework for Unity based on Coroutines
 # install
 Use this repository as GitHub URL. It contains a package manifest file.
 
+### Open UPM
+URL: https://package.openupm.com
+
+Scope: org.pcsoft
+
 # usage
 There is a builder to create and run animations. The builder supports a lot of animation types. 
 See the following code to understood how it works:
