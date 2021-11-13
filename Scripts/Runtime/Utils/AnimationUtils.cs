@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 using System.Linq;
-using UnityAnimation.Runtime.animation.Scripts.Types;
+using UnityAnimation.Runtime.animation.Scripts.Runtime.Types;
 using UnityEngine;
 
-namespace UnityAnimation.Runtime.animation.Scripts.Utils
+namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
 {
     internal static class AnimationUtils
     {

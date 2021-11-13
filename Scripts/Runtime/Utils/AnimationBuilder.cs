@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using UnityAnimation.Runtime.animation.Scripts.Types;
+using UnityAnimation.Runtime.animation.Scripts.Runtime.Types;
 using UnityEngine;
 
-namespace UnityAnimation.Runtime.animation.Scripts.Utils
+namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
 {
     public sealed partial class AnimationBuilder
     {
