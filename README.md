@@ -27,6 +27,15 @@ AnimationBuilder.Create(this)
 
 Additional you can add a finisher to each step as last parameter. 
 
+As extension you can transfer data between animation steps:
+
+```c#
+AnimationBuilder.Create(this)
+    .Animate(myCurve, mySpeed, (v, data) => ..., data => data.Set(key, value))
+    .Animate(myCurve, mySpeed, (v, data) => Mathf.abs(v * data.Get<float>(key)))
+    .Start() 
+```
+
 To get a better control for the animations the method `Start()` returns an `AnimationRunner` object:
 
 ```c#

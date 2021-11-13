@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using UnityAnimation.Runtime.animation.Scripts.Runtime.Types;
 using UnityEngine;
 
 namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
@@ -8,7 +9,7 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
     {
         public bool IsRunning { get; private set; }
 
-        public AnimationRunner Start(float delayed, Action onFinished = null)
+        public AnimationRunner Start(float delayed, Action<AnimationData> onFinished = null)
         {
             if (_steps.Count <= 0)
                 throw new InvalidOperationException("No animation inside builder");
@@ -18,18 +19,24 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
             var animationRunner = new AnimationRunner(_behaviour);
             
             IsRunning = true;
-            animationRunner.Coroutine = Run(AnimationUtils.WaitAndRun(delayed, () =>
+            animationRunner.Coroutine = Run(AnimationUtils.WaitAndRun(delayed, new AnimationData(), data =>
             {
-                onFinished?.Invoke();
+                onFinished?.Invoke(data);
                 if (animationRunner.IsStopped)
                     return;
-                StartNext(0, animationRunner);
+                
+                StartNext(0, animationRunner, data);
             }));
 
             return animationRunner;
         }
 
         public AnimationRunner Start()
+        {
+            return Start(new AnimationData());
+        }
+
+        private AnimationRunner Start(AnimationData data)
         {
             if (_steps.Count <= 0)
                 throw new InvalidOperationException("No animation inside builder");
@@ -39,16 +46,16 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
             var animationRunner = new AnimationRunner(_behaviour);
 
             IsRunning = true;
-            StartNext(0, animationRunner);
+            StartNext(0, animationRunner, data);
 
             return animationRunner;
         }
 
-        private void StartNext(int stepIndex, AnimationRunner animationRunner)
+        private void StartNext(int stepIndex, AnimationRunner animationRunner, AnimationData data)
         {
             if (stepIndex >= _steps.Count)
             {
-                _onFinished?.Invoke();
+                _onFinished?.Invoke(data);
                 IsRunning = false;
 
                 return;
@@ -59,93 +66,93 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
             {
                 subAnimStep.RunSubAnimation.Invoke(() =>
                 {
-                    subAnimStep.OnFinished?.Invoke();
+                    subAnimStep.OnFinished?.Invoke(data);
                     if (animationRunner.IsStopped)
                         return;
-                    StartNext(stepIndex + 1, animationRunner);
-                });
+                    StartNext(stepIndex + 1, animationRunner, data);
+                }, data);
             }
             else if (step is AnimateAnimationStep animStep)
             {
-                animationRunner.Coroutine = Run(AnimationUtils.RunAnimation(_type, animStep.Curves, animStep.Speed, animStep.Handler, () =>
+                animationRunner.Coroutine = Run(AnimationUtils.RunAnimation(_type, animStep.Curves, animStep.Speed, animStep.Handler, data, data =>
                 {
-                    animStep.OnFinished?.Invoke();
+                    animStep.OnFinished?.Invoke(data);
                     if (animationRunner.IsStopped)
                         return;
-                    StartNext(stepIndex + 1, animationRunner);
+                    StartNext(stepIndex + 1, animationRunner, data);
                 }));
             }
             else if (step is AnimateConstantAnimationStep animConstStep)
             {
-                animationRunner.Coroutine = Run(AnimationUtils.RunAnimationConstant(_type, animConstStep.Time, animConstStep.Handler, () =>
+                animationRunner.Coroutine = Run(AnimationUtils.RunAnimationConstant(_type, animConstStep.Time, animConstStep.Handler, data, data =>
                 {
-                    animConstStep.OnFinished?.Invoke();
+                    animConstStep.OnFinished?.Invoke(data);
                     if (animationRunner.IsStopped)
                         return;
-                    StartNext(stepIndex + 1, animationRunner);
+                    StartNext(stepIndex + 1, animationRunner, data);
                 }));
             }
             else if (step is WaitSecondsAnimationStep waitSecStep)
             {
-                animationRunner.Coroutine = Run(AnimationUtils.WaitAndRun(_type, waitSecStep.Seconds, () =>
+                animationRunner.Coroutine = Run(AnimationUtils.WaitAndRun(_type, waitSecStep.Seconds, data, data =>
                 {
-                    waitSecStep.OnFinished?.Invoke();
+                    waitSecStep.OnFinished?.Invoke(data);
                     if (animationRunner.IsStopped)
                         return;
-                    StartNext(stepIndex + 1, animationRunner);
+                    StartNext(stepIndex + 1, animationRunner, data);
                 }));
             }
             else if (step is WaitFramesAnimationStep waitFrameStep)
             {
-                animationRunner.Coroutine = Run(AnimationUtils.WaitAndRun(waitFrameStep.Frames, () =>
+                animationRunner.Coroutine = Run(AnimationUtils.WaitAndRun(waitFrameStep.Frames, data, data =>
                 {
-                    waitFrameStep.OnFinished?.Invoke();
+                    waitFrameStep.OnFinished?.Invoke(data);
                     if (animationRunner.IsStopped)
                         return;
-                    StartNext(stepIndex + 1, animationRunner);
+                    StartNext(stepIndex + 1, animationRunner, data);
                 }));
             }
             else if (step is RunAllSecondsAnimationStep runAllSecStep)
             {
-                animationRunner.Coroutine = Run(AnimationUtils.RunAll(_type, runAllSecStep.Seconds, () =>
+                animationRunner.Coroutine = Run(AnimationUtils.RunAll(_type, runAllSecStep.Seconds, data, data =>
                 {
-                    runAllSecStep.OnFinished?.Invoke();
+                    runAllSecStep.OnFinished?.Invoke(data);
                     if (animationRunner.IsStopped)
                         return;
-                    StartNext(stepIndex + 1, animationRunner);
+                    StartNext(stepIndex + 1, animationRunner, data);
                 }, runAllSecStep.Actions));
             }
             else if (step is RunAllFramesAnimationStep runAllFramesStep)
             {
-                animationRunner.Coroutine = Run(AnimationUtils.RunAll(_type, runAllFramesStep.Frames, () =>
+                animationRunner.Coroutine = Run(AnimationUtils.RunAll(_type, runAllFramesStep.Frames, data, data =>
                 {
-                    runAllFramesStep.OnFinished?.Invoke();
+                    runAllFramesStep.OnFinished?.Invoke(data);
                     if (animationRunner.IsStopped)
                         return;
-                    StartNext(stepIndex + 1, animationRunner);
+                    StartNext(stepIndex + 1, animationRunner, data);
                 }, runAllFramesStep.Actions));
             }
             else if (step is RunRepeatSecondsAnimationStep runRepeatSecStep)
             {
                 animationRunner.Coroutine = Run(AnimationUtils.RunAll(
-                    runRepeatSecStep.Seconds, runRepeatSecStep.RepeatCount, runRepeatSecStep.Action, _type, () =>
+                    runRepeatSecStep.Seconds, runRepeatSecStep.RepeatCount, runRepeatSecStep.Action, data, _type, data =>
                     {
-                        runRepeatSecStep.OnFinished?.Invoke();
+                        runRepeatSecStep.OnFinished?.Invoke(data);
                         if (animationRunner.IsStopped)
                             return;
-                        StartNext(stepIndex + 1, animationRunner);
+                        StartNext(stepIndex + 1, animationRunner, data);
                     }
                 ));
             }
             else if (step is RunRepeatFramesAnimationStep runRepeatFramesStep)
             {
                 animationRunner.Coroutine = Run(AnimationUtils.RunAll(
-                    runRepeatFramesStep.Frames, runRepeatFramesStep.RepeatCount, runRepeatFramesStep.Action, _type, () =>
+                    runRepeatFramesStep.Frames, runRepeatFramesStep.RepeatCount, runRepeatFramesStep.Action, data, _type, data =>
                     {
-                        runRepeatFramesStep.OnFinished?.Invoke();
+                        runRepeatFramesStep.OnFinished?.Invoke(data);
                         if (animationRunner.IsStopped)
                             return;
-                        StartNext(stepIndex + 1, animationRunner);
+                        StartNext(stepIndex + 1, animationRunner, data);
                     }
                 ));
             }
@@ -156,7 +163,7 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
 
                 if (!builder.IsRunning)
                 {
-                    builder.Start();
+                    builder.Start(data);
                 }
             }
             else

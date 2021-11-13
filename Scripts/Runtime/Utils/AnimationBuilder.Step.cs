@@ -1,4 +1,5 @@
 using System;
+using UnityAnimation.Runtime.animation.Scripts.Runtime.Types;
 using UnityEngine;
 
 namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
@@ -7,9 +8,9 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
     {
         private abstract class AnimationStep
         {
-            public Action OnFinished { get; }
+            public Action<AnimationData> OnFinished { get; }
 
-            protected AnimationStep(Action onFinished)
+            protected AnimationStep(Action<AnimationData> onFinished)
             {
                 OnFinished = onFinished;
             }
@@ -18,9 +19,9 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
         private sealed class AnimateConstantAnimationStep : AnimationStep
         {
             public float Time { get; }
-            public Action<float> Handler { get; }
+            public Action<float, AnimationData> Handler { get; }
 
-            public AnimateConstantAnimationStep(float time, Action<float> handler, Action onFinished) : base(onFinished)
+            public AnimateConstantAnimationStep(float time, Action<float, AnimationData> handler, Action<AnimationData> onFinished) : base(onFinished)
             {
                 Time = time;
                 Handler = handler;
@@ -29,9 +30,9 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
 
         private sealed class SubAnimationStep : AnimationStep
         {
-            public Action<Action> RunSubAnimation { get; }
+            public Action<Action, AnimationData> RunSubAnimation { get; }
 
-            public SubAnimationStep(Action<Action> runSubAnimation, Action onFinished) : base(onFinished)
+            public SubAnimationStep(Action<Action, AnimationData> runSubAnimation, Action<AnimationData> onFinished) : base(onFinished)
             {
                 RunSubAnimation = runSubAnimation;
             }
@@ -41,14 +42,14 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
         {
             public AnimationCurve[] Curves { get; }
             public float Speed { get; }
-            public Action<float[]> Handler { get; }
+            public Action<float[], AnimationData> Handler { get; }
 
-            public AnimateAnimationStep(AnimationCurve curve, float speed, Action<float> handler, Action onFinished) 
-                : this(new []{curve}, speed, values => handler(values[0]), onFinished)
+            public AnimateAnimationStep(AnimationCurve curve, float speed, Action<float, AnimationData> handler, Action<AnimationData> onFinished) 
+                : this(new []{curve}, speed, (values, data) => handler(values[0], data), onFinished)
             {
             }
 
-            public AnimateAnimationStep(AnimationCurve[] curves, float speed, Action<float[]> handler, Action onFinished) : base(onFinished)
+            public AnimateAnimationStep(AnimationCurve[] curves, float speed, Action<float[], AnimationData> handler, Action<AnimationData> onFinished) : base(onFinished)
             {
                 Curves = curves;
                 Speed = speed;
@@ -60,7 +61,7 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
         {
             public float Seconds { get; }
 
-            public WaitSecondsAnimationStep(float seconds, Action onFinished) : base(onFinished)
+            public WaitSecondsAnimationStep(float seconds, Action<AnimationData> onFinished) : base(onFinished)
             {
                 Seconds = seconds;
             }
@@ -70,7 +71,7 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
         {
             public uint Frames { get; }
 
-            public WaitFramesAnimationStep(uint frames, Action onFinished) : base(onFinished)
+            public WaitFramesAnimationStep(uint frames, Action<AnimationData> onFinished) : base(onFinished)
             {
                 Frames = frames;
             }
@@ -79,9 +80,9 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
         private sealed class RunAllSecondsAnimationStep : AnimationStep
         {
             public float Seconds { get; }
-            public Action[] Actions { get; }
+            public Action<AnimationData>[] Actions { get; }
 
-            public RunAllSecondsAnimationStep(float seconds, Action[] actions, Action onFinished) : base(onFinished)
+            public RunAllSecondsAnimationStep(float seconds, Action<AnimationData>[] actions, Action<AnimationData> onFinished) : base(onFinished)
             {
                 Seconds = seconds;
                 Actions = actions;
@@ -91,9 +92,9 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
         private sealed class RunAllFramesAnimationStep : AnimationStep
         {
             public uint Frames { get; }
-            public Action[] Actions { get; }
+            public Action<AnimationData>[] Actions { get; }
 
-            public RunAllFramesAnimationStep(uint frames, Action[] actions, Action onFinished) : base(onFinished)
+            public RunAllFramesAnimationStep(uint frames, Action<AnimationData>[] actions, Action<AnimationData> onFinished) : base(onFinished)
             {
                 Frames = frames;
                 Actions = actions;
@@ -104,9 +105,9 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
         {
             public float Seconds { get; }
             public uint RepeatCount { get; }
-            public Action<int> Action { get; }
+            public Action<int, AnimationData> Action { get; }
 
-            public RunRepeatSecondsAnimationStep(float seconds, uint repeatCount, Action<int> action, Action onFinished) : base(onFinished)
+            public RunRepeatSecondsAnimationStep(float seconds, uint repeatCount, Action<int, AnimationData> action, Action<AnimationData> onFinished) : base(onFinished)
             {
                 Seconds = seconds;
                 RepeatCount = repeatCount;
@@ -118,9 +119,9 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
         {
             public uint Frames { get; }
             public uint RepeatCount { get; }
-            public Action<int> Action { get; }
+            public Action<int, AnimationData> Action { get; }
 
-            public RunRepeatFramesAnimationStep(uint frames, uint repeatCount, Action<int> action, Action onFinished) : base(onFinished)
+            public RunRepeatFramesAnimationStep(uint frames, uint repeatCount, Action<int, AnimationData> action, Action<AnimationData> onFinished) : base(onFinished)
             {
                 Frames = frames;
                 RepeatCount = repeatCount;
@@ -132,7 +133,7 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
         {
             public Func<AnimationBuilder, AnimationBuilder> BuildAction { get; }
 
-            public ParallelAnimationStep(Func<AnimationBuilder, AnimationBuilder> buildAction, Action onFinished) : base(onFinished)
+            public ParallelAnimationStep(Func<AnimationBuilder, AnimationBuilder> buildAction, Action<AnimationData> onFinished) : base(onFinished)
             {
                 BuildAction = buildAction;
             }

@@ -8,37 +8,37 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
 {
     internal static class AnimationUtils
     {
-        public static IEnumerator RunAnimation(AnimationCurve curve, float speed, Action<float> handler, Action onFinished = null)
+        public static IEnumerator RunAnimation(AnimationCurve curve, float speed, Action<float, AnimationData> handler, AnimationData data, Action<AnimationData> onFinished = null)
         {
-            return RunAnimation(AnimationType.Scaled, curve, speed, handler, onFinished);
+            return RunAnimation(AnimationType.Scaled, curve, speed, handler, data, onFinished);
         }
-        
-        public static IEnumerator RunAnimation(float preDelay, AnimationCurve curve, float speed, Action<float> handler, Action onFinished)
+
+        public static IEnumerator RunAnimation(float preDelay, AnimationCurve curve, float speed, Action<float, AnimationData> handler, AnimationData data, Action<AnimationData> onFinished)
         {
-            return RunAnimation(AnimationType.Scaled, preDelay, new []{curve}, speed, values => handler(values[0]), onFinished);
+            return RunAnimation(AnimationType.Scaled, preDelay, new[] { curve }, speed, (values, data) => handler(values[0], data), data, onFinished);
         }
-        
-        public static IEnumerator RunAnimation(AnimationType type, AnimationCurve curve, float speed, Action<float> handler, Action onFinished = null)
+
+        public static IEnumerator RunAnimation(AnimationType type, AnimationCurve curve, float speed, Action<float, AnimationData> handler, AnimationData data, Action<AnimationData> onFinished = null)
         {
-            return RunAnimation(type, 0f, new [] {curve}, speed, values => handler(values[0]), onFinished);
+            return RunAnimation(type, 0f, new[] { curve }, speed, (values, data) => handler(values[0], data), data, onFinished);
         }
-        
-        public static IEnumerator RunAnimation(AnimationCurve[] curves, float speed, Action<float[]> handler, Action onFinished = null)
+
+        public static IEnumerator RunAnimation(AnimationCurve[] curves, float speed, Action<float[], AnimationData> handler, AnimationData data, Action<AnimationData> onFinished = null)
         {
-            return RunAnimation(AnimationType.Scaled, curves, speed, handler, onFinished);
+            return RunAnimation(AnimationType.Scaled, curves, speed, handler, data, onFinished);
         }
-        
-        public static IEnumerator RunAnimation(float preDelay, AnimationCurve[] curves, float speed, Action<float[]> handler, Action onFinished)
+
+        public static IEnumerator RunAnimation(float preDelay, AnimationCurve[] curves, float speed, Action<float[], AnimationData> handler, AnimationData data, Action<AnimationData> onFinished)
         {
-            return RunAnimation(AnimationType.Scaled, preDelay, curves, speed, handler, onFinished);
+            return RunAnimation(AnimationType.Scaled, preDelay, curves, speed, handler, data, onFinished);
         }
-        
-        public static IEnumerator RunAnimation(AnimationType type, AnimationCurve[] curves, float speed, Action<float[]> handler, Action onFinished = null)
+
+        public static IEnumerator RunAnimation(AnimationType type, AnimationCurve[] curves, float speed, Action<float[], AnimationData> handler, AnimationData data, Action<AnimationData> onFinished = null)
         {
-            return RunAnimation(type, 0f, curves, speed, handler, onFinished);
+            return RunAnimation(type, 0f, curves, speed, handler, data, onFinished);
         }
-        
-        public static IEnumerator RunAnimation(AnimationType type, float preDelay, AnimationCurve[] curves, float speed, Action<float[]> handler, Action onFinished)
+
+        public static IEnumerator RunAnimation(AnimationType type, float preDelay, AnimationCurve[] curves, float speed, Action<float[], AnimationData> handler, AnimationData data, Action<AnimationData> onFinished)
         {
             if (preDelay > 0f)
             {
@@ -58,7 +58,7 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
             for (var i = 0f; i < speed; i += GetDelta(type))
             {
                 var values = curves.Select(x => x.Evaluate(i / speed)).ToArray();
-                handler(values);
+                handler(values, data);
 
                 yield return null;
             }
@@ -68,26 +68,27 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
             {
                 oneArray[i] = 1f;
             }
-            handler(oneArray);
-            onFinished?.Invoke();
-        }
-        
-        public static IEnumerator RunAnimationConstant(float time, Action<float> handler, Action onFinished)
-        {
-            return RunAnimationConstant(AnimationType.Scaled, 0f, time, handler, onFinished);
+
+            handler(oneArray, data);
+            onFinished?.Invoke(data);
         }
 
-        public static IEnumerator RunAnimationConstant(float preDelay, float time, Action<float> handler, Action onFinished)
+        public static IEnumerator RunAnimationConstant(float time, Action<float, AnimationData> handler, AnimationData data, Action<AnimationData> onFinished)
         {
-            return RunAnimationConstant(AnimationType.Scaled, preDelay, time, handler, onFinished);
+            return RunAnimationConstant(AnimationType.Scaled, 0f, time, handler, data, onFinished);
         }
 
-        public static IEnumerator RunAnimationConstant(AnimationType type, float time, Action<float> handler, Action onFinished)
+        public static IEnumerator RunAnimationConstant(float preDelay, float time, Action<float, AnimationData> handler, AnimationData data, Action<AnimationData> onFinished)
         {
-            return RunAnimationConstant(type, 0f, time, handler, onFinished);
+            return RunAnimationConstant(AnimationType.Scaled, preDelay, time, handler, data, onFinished);
         }
 
-        public static IEnumerator RunAnimationConstant(AnimationType type, float preDelay, float time, Action<float> handler, Action onFinished)
+        public static IEnumerator RunAnimationConstant(AnimationType type, float time, Action<float, AnimationData> handler, AnimationData data, Action<AnimationData> onFinished)
+        {
+            return RunAnimationConstant(type, 0f, time, handler, data, onFinished);
+        }
+
+        public static IEnumerator RunAnimationConstant(AnimationType type, float preDelay, float time, Action<float, AnimationData> handler, AnimationData data, Action<AnimationData> onFinished)
         {
             if (preDelay > 0f)
             {
@@ -107,20 +108,20 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
             for (var i = 0f; i < time; i += GetDelta(type))
             {
                 var value = i / time;
-                handler(value);
+                handler(value, data);
 
                 yield return null;
             }
 
-            onFinished?.Invoke();
+            onFinished?.Invoke(data);
         }
 
-        public static IEnumerator WaitAndRun(float preDelay, float postDelay, Action preAction, Action postAction)
+        public static IEnumerator WaitAndRun(float preDelay, float postDelay, Action<AnimationData> preAction, AnimationData data, Action<AnimationData> postAction)
         {
-            return WaitAndRun(preDelay, postDelay, AnimationType.Scaled, preAction, postAction);
+            return WaitAndRun(preDelay, postDelay, AnimationType.Scaled, data, preAction, postAction);
         }
 
-        public static IEnumerator WaitAndRun(float preDelay, float postDelay, AnimationType type, Action preAction, Action postAction)
+        public static IEnumerator WaitAndRun(float preDelay, float postDelay, AnimationType type, AnimationData data, Action<AnimationData> preAction, Action<AnimationData> postAction)
         {
             switch (type)
             {
@@ -133,8 +134,9 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
                 default:
                     throw new NotImplementedException();
             }
-            preAction.Invoke();
-            
+
+            preAction.Invoke(data);
+
             switch (type)
             {
                 case AnimationType.Scaled:
@@ -146,15 +148,16 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
                 default:
                     throw new NotImplementedException();
             }
-            postAction.Invoke();
+
+            postAction.Invoke(data);
         }
 
-        public static IEnumerator WaitAndRun(float delay, Action onFinished)
+        public static IEnumerator WaitAndRun(float delay, AnimationData data, Action<AnimationData> onFinished)
         {
-            return WaitAndRun(AnimationType.Scaled, delay, onFinished);
+            return WaitAndRun(AnimationType.Scaled, delay, data, onFinished);
         }
-        
-        public static IEnumerator WaitAndRun(AnimationType type, float delay, Action onFinished)
+
+        public static IEnumerator WaitAndRun(AnimationType type, float delay, AnimationData data, Action<AnimationData> onFinished)
         {
             switch (type)
             {
@@ -167,16 +170,18 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
                 default:
                     throw new NotImplementedException();
             }
-            onFinished.Invoke();
+
+            onFinished.Invoke(data);
         }
 
-        public static IEnumerator WaitAndRun(uint frames, Action onFinished)
+        public static IEnumerator WaitAndRun(uint frames, AnimationData data, Action<AnimationData> onFinished)
         {
             for (var i = 0; i < frames; i++)
             {
-                yield return null;                
+                yield return null;
             }
-            onFinished.Invoke();
+
+            onFinished.Invoke(data);
         }
 
         public static IEnumerator Delegate(Func<IEnumerator> func)
@@ -184,16 +189,16 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
             return func.Invoke();
         }
 
-        public static IEnumerator RunAll(float delay, params Action[] actions)
+        public static IEnumerator RunAll(float delay, AnimationData data, params Action<AnimationData>[] actions)
         {
-            return RunAll(AnimationType.Scaled, delay, null, actions);
+            return RunAll(AnimationType.Scaled, delay, data, null, actions);
         }
-        
-        public static IEnumerator RunAll(AnimationType type, float delay, Action onFinished, params Action[] actions)
+
+        public static IEnumerator RunAll(AnimationType type, float delay, AnimationData data, Action<AnimationData> onFinished, params Action<AnimationData>[] actions)
         {
             foreach (var action in actions)
             {
-                action.Invoke();
+                action.Invoke(data);
                 switch (type)
                 {
                     case AnimationType.Scaled:
@@ -206,34 +211,34 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
                         throw new NotImplementedException();
                 }
             }
-            
-            onFinished?.Invoke();
+
+            onFinished?.Invoke(data);
         }
-        
-        public static IEnumerator RunAll(uint frames, params Action[] actions)
+
+        public static IEnumerator RunAll(uint frames, AnimationData data, params Action<AnimationData>[] actions)
         {
-            return RunAll(frames, null, actions);
+            return RunAll(frames, data, null, actions);
         }
-        
-        public static IEnumerator RunAll(uint frames, Action onFinished, params Action[] actions)
+
+        public static IEnumerator RunAll(uint frames, AnimationData data, Action<AnimationData> onFinished, params Action<AnimationData>[] actions)
         {
             foreach (var action in actions)
             {
-                action.Invoke();
+                action.Invoke(data);
                 for (var i = 0; i < frames; i++)
                 {
                     yield return null;
                 }
             }
-            
-            onFinished?.Invoke();
+
+            onFinished?.Invoke(data);
         }
 
-        public static IEnumerator RunAll(float delay, uint repeat, Action<int> handler, AnimationType type = AnimationType.Scaled, Action onFinished = null)
+        public static IEnumerator RunAll(float delay, uint repeat, Action<int, AnimationData> handler, AnimationData data, AnimationType type = AnimationType.Scaled, Action<AnimationData> onFinished = null)
         {
             for (var i = 0; i < repeat; i++)
             {
-                handler.Invoke(i);
+                handler.Invoke(i, data);
                 switch (type)
                 {
                     case AnimationType.Scaled:
@@ -246,22 +251,22 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
                         throw new NotImplementedException();
                 }
             }
-            
-            onFinished?.Invoke();
+
+            onFinished?.Invoke(data);
         }
-        
-        public static IEnumerator RunAll(uint frames, uint repeat, Action<int> handler, Action onFinished = null)
+
+        public static IEnumerator RunAll(uint frames, uint repeat, Action<int, AnimationData> handler, AnimationData data, Action<AnimationData> onFinished = null)
         {
             for (var i = 0; i < repeat; i++)
             {
-                handler.Invoke(i);
+                handler.Invoke(i, data);
                 for (var j = 0; j < frames; j++)
                 {
                     yield return null;
                 }
             }
-            
-            onFinished?.Invoke();
+
+            onFinished?.Invoke(data);
         }
 
         private static float GetDelta(AnimationType type)
