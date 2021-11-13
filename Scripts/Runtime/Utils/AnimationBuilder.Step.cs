@@ -1,5 +1,6 @@
 using System;
 using UnityAnimation.Runtime.animation.Scripts.Runtime.Types;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
@@ -136,6 +137,13 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
             public ParallelAnimationStep(Func<AnimationBuilder, AnimationBuilder> buildAction, Action<AnimationData> onFinished) : base(onFinished)
             {
                 BuildAction = buildAction;
+            }
+        }
+
+        private sealed class ImmediatelyStep : AnimationStep
+        {
+            public ImmediatelyStep(Action<AnimationData> onFinished) : base(onFinished)
+            {
             }
         }
     }

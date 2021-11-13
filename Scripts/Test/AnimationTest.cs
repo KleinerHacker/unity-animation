@@ -24,6 +24,13 @@ namespace UnityAnimation.Test.animation.Scripts.Test
         }
         
         [UnityTest]
+        [Timeout(500)]
+        public IEnumerator TestImmediately()
+        {
+            yield return new MonoBehaviourTest<TestImmediatelyBehavior>();
+        }
+        
+        [UnityTest]
         [Timeout(5000)]
         public IEnumerator TestMixedWithFinisher()
         {
@@ -59,6 +66,18 @@ namespace UnityAnimation.Test.animation.Scripts.Test
                 AnimationBuilder.Create(this)
                     .Animate(AnimationCurve.EaseInOut(0f, 0f, 1f, 1f), 1f,
                         v => counter = v, () => IsTestFinished = counter >= 1f)
+                    .Start();
+            }
+        }
+
+        private sealed class TestImmediatelyBehavior : MonoBehaviour, IMonoBehaviourTest
+        {
+            public bool IsTestFinished { get; private set; }
+
+            private void OnEnable()
+            {
+                AnimationBuilder.Create(this)
+                    .Immediately(() => IsTestFinished = true)
                     .Start();
             }
         }

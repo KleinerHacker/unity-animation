@@ -174,6 +174,14 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
             return this;
         }
 
+        public AnimationBuilder Immediately(Action onFinished) => Immediately(_ => onFinished?.Invoke());
+
+        public AnimationBuilder Immediately(Action<AnimationData> onFinished)
+        {
+            _steps.Add(new ImmediatelyStep(onFinished));
+            return this;
+        }
+
         public AnimationBuilder WithFinisher(Action onFinished) => WithFinisher(_ => onFinished?.Invoke());
 
         public AnimationBuilder WithFinisher(Action<AnimationData> onFinished)

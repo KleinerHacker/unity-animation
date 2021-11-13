@@ -17,14 +17,14 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
                 throw new InvalidOperationException("Is already running");
 
             var animationRunner = new AnimationRunner(_behaviour);
-            
+
             IsRunning = true;
             animationRunner.Coroutine = Run(AnimationUtils.WaitAndRun(delayed, new AnimationData(), data =>
             {
                 onFinished?.Invoke(data);
                 if (animationRunner.IsStopped)
                     return;
-                
+
                 StartNext(0, animationRunner, data);
             }));
 
@@ -165,6 +165,11 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
                 {
                     builder.Start(data);
                 }
+            }
+            else if (step is ImmediatelyStep immediatelyStep)
+            {
+                immediatelyStep.OnFinished?.Invoke(data);
+                StartNext(stepIndex + 1, animationRunner, data);
             }
             else
                 throw new NotImplementedException(step.GetType().FullName);
