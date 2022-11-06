@@ -105,12 +105,14 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
         {
             public float Seconds { get; }
             public uint RepeatCount { get; }
+            public bool Inverted { get; }
             public Action<int, AnimationData> Action { get; }
 
-            public RunRepeatSecondsAnimationStep(float seconds, uint repeatCount, Action<int, AnimationData> action, Action<AnimationData> onFinished) : base(onFinished)
+            public RunRepeatSecondsAnimationStep(float seconds, uint repeatCount, bool inverted, Action<int, AnimationData> action, Action<AnimationData> onFinished) : base(onFinished)
             {
                 Seconds = seconds;
                 RepeatCount = repeatCount;
+                Inverted = inverted;
                 Action = action;
             }
         }
@@ -119,12 +121,14 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
         {
             public uint Frames { get; }
             public uint RepeatCount { get; }
+            public bool Inverted { get; }
             public Action<int, AnimationData> Action { get; }
 
-            public RunRepeatFramesAnimationStep(uint frames, uint repeatCount, Action<int, AnimationData> action, Action<AnimationData> onFinished) : base(onFinished)
+            public RunRepeatFramesAnimationStep(uint frames, uint repeatCount, bool inverted, Action<int, AnimationData> action, Action<AnimationData> onFinished) : base(onFinished)
             {
                 Frames = frames;
                 RepeatCount = repeatCount;
+                Inverted = inverted;
                 Action = action;
             }
         }

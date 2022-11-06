@@ -134,8 +134,8 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
             }
             else if (step is RunRepeatSecondsAnimationStep runRepeatSecStep)
             {
-                animationRunner.Coroutine = Run(AnimationUtils.RunAll(
-                    runRepeatSecStep.Seconds, runRepeatSecStep.RepeatCount, runRepeatSecStep.Action, data, _type, data =>
+                animationRunner.Coroutine = Run(AnimationUtils.RunAllSeconds(
+                    runRepeatSecStep.Seconds, runRepeatSecStep.RepeatCount, runRepeatSecStep.Inverted, runRepeatSecStep.Action, data, _type, data =>
                     {
                         runRepeatSecStep.OnFinished?.Invoke(data);
                         if (animationRunner.IsStopped)
@@ -146,8 +146,8 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
             }
             else if (step is RunRepeatFramesAnimationStep runRepeatFramesStep)
             {
-                animationRunner.Coroutine = Run(AnimationUtils.RunAll(
-                    runRepeatFramesStep.Frames, runRepeatFramesStep.RepeatCount, runRepeatFramesStep.Action, data, _type, data =>
+                animationRunner.Coroutine = Run(AnimationUtils.RunAllFrames(
+                    runRepeatFramesStep.Frames, runRepeatFramesStep.RepeatCount, runRepeatFramesStep.Inverted, runRepeatFramesStep.Action, data, data =>
                     {
                         runRepeatFramesStep.OnFinished?.Invoke(data);
                         if (animationRunner.IsStopped)
