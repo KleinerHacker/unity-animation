@@ -215,54 +215,60 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
             onFinished?.Invoke(data);
         }
 
-        public static IEnumerator RunAll(uint frames, AnimationData data, params Action<AnimationData>[] actions)
+        public static IEnumerator RunAllSeconds(float delay, uint repeat, bool inverted, Action<int, AnimationData> handler, AnimationData data, AnimationType type = AnimationType.Scaled, Action<AnimationData> onFinished = null)
         {
-            return RunAll(frames, data, null, actions);
-        }
-
-        public static IEnumerator RunAll(uint frames, AnimationData data, Action<AnimationData> onFinished, params Action<AnimationData>[] actions)
-        {
-            foreach (var action in actions)
+            if (inverted)
             {
-                action.Invoke(data);
-                for (var i = 0; i < frames; i++)
+                for (var i = (int)(repeat - 1); i >= 0; i--)
                 {
-                    yield return null;
+                    handler.Invoke(i, data);
+                    yield return type switch
+                    {
+                        AnimationType.Scaled => new WaitForSeconds(delay),
+                        AnimationType.Unscaled => new WaitForSecondsRealtime(delay),
+                        _ => throw new NotImplementedException()
+                    };
+                }
+            }
+            else
+            {
+                for (var i = 0; i < repeat; i++)
+                {
+                    handler.Invoke(i, data);
+                    yield return type switch
+                    {
+                        AnimationType.Scaled => new WaitForSeconds(delay),
+                        AnimationType.Unscaled => new WaitForSecondsRealtime(delay),
+                        _ => throw new NotImplementedException()
+                    };
                 }
             }
 
             onFinished?.Invoke(data);
         }
 
-        public static IEnumerator RunAll(float delay, uint repeat, Action<int, AnimationData> handler, AnimationData data, AnimationType type = AnimationType.Scaled, Action<AnimationData> onFinished = null)
+        public static IEnumerator RunAllFrames(uint frames, uint repeat, bool inverted, Action<int, AnimationData> handler, AnimationData data, Action<AnimationData> onFinished = null)
         {
-            for (var i = 0; i < repeat; i++)
+            if (inverted)
             {
-                handler.Invoke(i, data);
-                switch (type)
+                for (var i = (int)(repeat - 1); i >= 0; i--)
                 {
-                    case AnimationType.Scaled:
-                        yield return new WaitForSeconds(delay);
-                        break;
-                    case AnimationType.Unscaled:
-                        yield return new WaitForSecondsRealtime(delay);
-                        break;
-                    default:
-                        throw new NotImplementedException();
+                    handler.Invoke(i, data);
+                    for (var j = 0; j < frames; j++)
+                    {
+                        yield return null;
+                    }
                 }
             }
-
-            onFinished?.Invoke(data);
-        }
-
-        public static IEnumerator RunAll(uint frames, uint repeat, Action<int, AnimationData> handler, AnimationData data, Action<AnimationData> onFinished = null)
-        {
-            for (var i = 0; i < repeat; i++)
+            else
             {
-                handler.Invoke(i, data);
-                for (var j = 0; j < frames; j++)
+                for (var i = 0; i < repeat; i++)
                 {
-                    yield return null;
+                    handler.Invoke(i, data);
+                    for (var j = 0; j < frames; j++)
+                    {
+                        yield return null;
+                    }
                 }
             }
 
