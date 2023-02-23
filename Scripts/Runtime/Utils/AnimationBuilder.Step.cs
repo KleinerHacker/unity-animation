@@ -42,17 +42,19 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
         {
             public AnimationCurve[] Curves { get; }
             public float Speed { get; }
+            public bool Revert { get; }
             public Action<float[], AnimationData> Handler { get; }
 
-            public AnimateAnimationStep(AnimationCurve curve, float speed, Action<float, AnimationData> handler, Action<AnimationData> onFinished) 
-                : this(new []{curve}, speed, (values, data) => handler(values[0], data), onFinished)
+            public AnimateAnimationStep(AnimationCurve curve, float speed, bool revert, Action<float, AnimationData> handler, Action<AnimationData> onFinished)
+                : this(new[] { curve }, speed, revert, (values, data) => handler(values[0], data), onFinished)
             {
             }
 
-            public AnimateAnimationStep(AnimationCurve[] curves, float speed, Action<float[], AnimationData> handler, Action<AnimationData> onFinished) : base(onFinished)
+            public AnimateAnimationStep(AnimationCurve[] curves, float speed, bool revert, Action<float[], AnimationData> handler, Action<AnimationData> onFinished) : base(onFinished)
             {
                 Curves = curves;
                 Speed = speed;
+                Revert = revert;
                 Handler = handler;
             }
         }
@@ -66,7 +68,7 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
                 Seconds = seconds;
             }
         }
-        
+
         private sealed class WaitFramesAnimationStep : AnimationStep
         {
             public uint Frames { get; }
@@ -88,7 +90,7 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
                 Actions = actions;
             }
         }
-        
+
         private sealed class RunAllFramesAnimationStep : AnimationStep
         {
             public uint Frames { get; }
@@ -100,7 +102,7 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
                 Actions = actions;
             }
         }
-        
+
         private sealed class RunRepeatSecondsAnimationStep : AnimationStep
         {
             public float Seconds { get; }
@@ -116,7 +118,7 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
                 Action = action;
             }
         }
-        
+
         private sealed class RunRepeatFramesAnimationStep : AnimationStep
         {
             public uint Frames { get; }

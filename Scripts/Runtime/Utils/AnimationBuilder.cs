@@ -38,16 +38,30 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
             return this;
         }
 
-        public AnimationBuilder Animate(AnimationCurve curve, float speed, Action<float> handler) => Animate(curve, speed, handler, null);
+        public AnimationBuilder Animate(AnimationCurve curve, float speed, Action<float> handler) =>
+            Animate(curve, speed, false, handler, null);
+
+        public AnimationBuilder Animate(AnimationCurve curve, float speed, bool revert, Action<float> handler) =>
+            Animate(curve, speed, revert, handler, null);
 
         public AnimationBuilder Animate(AnimationCurve curve, float speed, Action<float> handler, Action onFinished) =>
-            Animate(curve, speed, (v, _) => handler?.Invoke(v), _ => onFinished?.Invoke());
+            Animate(curve, speed, false, (v, _) => handler?.Invoke(v), _ => onFinished?.Invoke());
 
-        public AnimationBuilder Animate(AnimationCurve curve, float speed, Action<float, AnimationData> handler) => Animate(curve, speed, handler, null);
+        public AnimationBuilder Animate(AnimationCurve curve, float speed, bool revert, Action<float> handler, Action onFinished) =>
+            Animate(curve, speed, revert, (v, _) => handler?.Invoke(v), _ => onFinished?.Invoke());
 
-        public AnimationBuilder Animate(AnimationCurve curve, float speed, Action<float, AnimationData> handler, Action<AnimationData> onFinished)
+        public AnimationBuilder Animate(AnimationCurve curve, float speed, Action<float, AnimationData> handler) =>
+            Animate(curve, speed, false, handler, null);
+
+        public AnimationBuilder Animate(AnimationCurve curve, float speed, bool revert, Action<float, AnimationData> handler) =>
+            Animate(curve, speed, revert, handler, null);
+
+        public AnimationBuilder Animate(AnimationCurve curve, float speed, Action<float, AnimationData> handler, Action<AnimationData> onFinished) =>
+            Animate(curve, speed, false, handler, onFinished);
+
+        public AnimationBuilder Animate(AnimationCurve curve, float speed, bool revert, Action<float, AnimationData> handler, Action<AnimationData> onFinished)
         {
-            _steps.Add(new AnimateAnimationStep(curve, speed, handler, onFinished));
+            _steps.Add(new AnimateAnimationStep(curve, speed, revert, handler, onFinished));
             return this;
         }
 
@@ -120,22 +134,22 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
             return this;
         }
 
-        public AnimationBuilder RunRepeated(float seconds, uint repeatCount, bool inverted, Action<int> action) => 
+        public AnimationBuilder RunRepeated(float seconds, uint repeatCount, bool inverted, Action<int> action) =>
             RunRepeated(seconds, repeatCount, inverted, action, null);
-        
-        public AnimationBuilder RunRepeated(float seconds, uint repeatCount, Action<int> action) => 
+
+        public AnimationBuilder RunRepeated(float seconds, uint repeatCount, Action<int> action) =>
             RunRepeated(seconds, repeatCount, false, action, null);
 
         public AnimationBuilder RunRepeated(float seconds, uint repeatCount, bool inverted, Action<int> action, Action onFinished) =>
             RunRepeated(seconds, repeatCount, inverted, (i, _) => action?.Invoke(i), _ => onFinished?.Invoke());
-        
+
         public AnimationBuilder RunRepeated(float seconds, uint repeatCount, Action<int> action, Action onFinished) =>
             RunRepeated(seconds, repeatCount, false, (i, _) => action?.Invoke(i), _ => onFinished?.Invoke());
 
-        public AnimationBuilder RunRepeated(float seconds, uint repeatCount, bool inverted, Action<int, AnimationData> action) => 
+        public AnimationBuilder RunRepeated(float seconds, uint repeatCount, bool inverted, Action<int, AnimationData> action) =>
             RunRepeated(seconds, repeatCount, inverted, action, null);
-        
-        public AnimationBuilder RunRepeated(float seconds, uint repeatCount, Action<int, AnimationData> action) => 
+
+        public AnimationBuilder RunRepeated(float seconds, uint repeatCount, Action<int, AnimationData> action) =>
             RunRepeated(seconds, repeatCount, false, action, null);
 
         public AnimationBuilder RunRepeated(float seconds, uint repeatCount, Action<int, AnimationData> action, Action<AnimationData> onFinished) =>
@@ -147,27 +161,27 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
             return this;
         }
 
-        public AnimationBuilder RunRepeated(uint frames, uint repeatCount, bool inverted, Action<int> action) => 
+        public AnimationBuilder RunRepeated(uint frames, uint repeatCount, bool inverted, Action<int> action) =>
             RunRepeated(frames, repeatCount, inverted, action, null);
-        
-        public AnimationBuilder RunRepeated(uint frames, uint repeatCount, Action<int> action) => 
+
+        public AnimationBuilder RunRepeated(uint frames, uint repeatCount, Action<int> action) =>
             RunRepeated(frames, repeatCount, false, action, null);
 
         public AnimationBuilder RunRepeated(uint frames, uint repeatCount, bool inverted, Action<int> action, Action onFinished) =>
             RunRepeated(frames, repeatCount, inverted, (i, _) => action?.Invoke(i), _ => onFinished?.Invoke());
-        
+
         public AnimationBuilder RunRepeated(uint frames, uint repeatCount, Action<int> action, Action onFinished) =>
             RunRepeated(frames, repeatCount, false, (i, _) => action?.Invoke(i), _ => onFinished?.Invoke());
 
-        public AnimationBuilder RunRepeated(uint frames, uint repeatCount, bool inverted, Action<int, AnimationData> action) => 
+        public AnimationBuilder RunRepeated(uint frames, uint repeatCount, bool inverted, Action<int, AnimationData> action) =>
             RunRepeated(frames, repeatCount, inverted, action, null);
-        
-        public AnimationBuilder RunRepeated(uint frames, uint repeatCount, Action<int, AnimationData> action) => 
+
+        public AnimationBuilder RunRepeated(uint frames, uint repeatCount, Action<int, AnimationData> action) =>
             RunRepeated(frames, repeatCount, false, action, null);
 
         public AnimationBuilder RunRepeated(uint frames, uint repeatCount, Action<int, AnimationData> action, Action<AnimationData> onFinished) =>
             RunRepeated(frames, repeatCount, false, action, onFinished);
-        
+
         public AnimationBuilder RunRepeated(uint frames, uint repeatCount, bool inverted, Action<int, AnimationData> action, Action<AnimationData> onFinished)
         {
             _steps.Add(new RunRepeatFramesAnimationStep(frames, repeatCount, inverted, action, onFinished));

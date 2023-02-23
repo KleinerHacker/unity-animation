@@ -74,7 +74,7 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
             }
             else if (step is AnimateAnimationStep animStep)
             {
-                animationRunner.Coroutine = Run(AnimationUtils.RunAnimation(_type, animStep.Curves, animStep.Speed, animStep.Handler, data, data =>
+                animationRunner.Coroutine = Run(AnimationUtils.RunAnimation(_type, animStep.Curves, animStep.Speed, animStep.Revert, animStep.Handler, data, data =>
                 {
                     animStep.OnFinished?.Invoke(data);
                     if (animationRunner.IsStopped)
