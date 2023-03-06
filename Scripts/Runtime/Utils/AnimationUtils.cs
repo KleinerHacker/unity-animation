@@ -79,6 +79,8 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
                 yield return null;
             }
 
+            handler(1f, data);
+
             onFinished?.Invoke(data);
         }
 

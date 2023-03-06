@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityAnimation.Runtime.animation.Scripts.Runtime.Types;
+using UnityBase.Runtime.@base.Scripts.Runtime;
 using UnityEngine;
 
 namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
@@ -11,6 +12,11 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
         public static AnimationBuilder Create(MonoBehaviour behaviour, AnimationType type = AnimationType.Scaled)
         {
             return new AnimationBuilder(behaviour, type);
+        }
+
+        public static AnimationBuilder Create(AnimationType type = AnimationType.Scaled)
+        {
+            return new AnimationBuilder(BehaviorSystem.GetHelper(), type);
         }
 
         private readonly MonoBehaviour _behaviour;
