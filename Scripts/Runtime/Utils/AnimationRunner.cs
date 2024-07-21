@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
+namespace UnityAnimation.Runtime.Projects.unity_animation.Scripts.Runtime.Utils
 {
     public sealed class AnimationRunner
     {

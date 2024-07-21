@@ -11,7 +11,7 @@
     "builder"
   ],
   "dependencies": {
-    "org.pcsoft.base": "1.0.1"
+    "org.pcsoft.base": "1.1.0"
   },
   "author": {
     "name": "Pfeiffer C Soft",
