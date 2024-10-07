@@ -18,13 +18,13 @@ namespace UnityAnimation.Runtime.Projects.unity_animation.Scripts.Runtime.Compon
 
         private void FixedUpdate()
         {
-            var fixedTime = animationType switch
+            var fixedDeltaTime = animationType switch
             {
-                AnimationType.Scaled => Time.fixedTime,
-                AnimationType.Unscaled => Time.fixedUnscaledTime,
+                AnimationType.Scaled => Time.fixedDeltaTime,
+                AnimationType.Unscaled => Time.fixedUnscaledDeltaTime,
                 _ => throw new NotImplementedException(animationType.ToString())
             };
-            Animate(fixedTime);
+            Animate(fixedDeltaTime);
         }
 
         #endregion
