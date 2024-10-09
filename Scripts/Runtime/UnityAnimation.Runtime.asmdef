@@ -1,16 +1,16 @@
 {
-  "name": "UnityAnimation.Runtime",
-  "rootNamespace": "UnityAnimation.Runtime",
-  "references": [
-    "GUID:64c52e74a682df04189ccbd30b6ca5aa"
-  ],
-  "includePlatforms": [],
-  "excludePlatforms": [],
-  "allowUnsafeCode": false,
-  "overrideReferences": false,
-  "precompiledReferences": [],
-  "autoReferenced": true,
-  "defineConstraints": [],
-  "versionDefines": [],
-  "noEngineReferences": false
+    "name": "UnityAnimation.Runtime",
+    "rootNamespace": "UnityAnimation.Runtime",
+    "references": [
+        "GUID:64c52e74a682df04189ccbd30b6ca5aa"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

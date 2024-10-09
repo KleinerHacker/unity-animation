@@ -1,8 +1,6 @@
-﻿using System;
-using UnityAnimation.Runtime.animation.Scripts.Runtime.Types;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Components
+namespace UnityAnimation.Runtime.Projects.unity_animation.Scripts.Runtime.Components
 {
     [AddComponentMenu(UnityAnimationConstants.Root + "/Rotator")]
     [DisallowMultipleComponent]

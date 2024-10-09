@@ -1,4 +1,4 @@
-namespace UnityAnimation.Runtime.animation.Scripts.Runtime
+namespace UnityAnimation.Runtime.Projects.unity_animation.Scripts.Runtime
 {
     internal static class UnityAnimationConstants
     {

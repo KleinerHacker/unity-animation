@@ -1,4 +1,4 @@
-namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Types
+namespace UnityAnimation.Runtime.Projects.unity_animation.Scripts.Runtime.Types
 {
     public enum AnimationType
     {

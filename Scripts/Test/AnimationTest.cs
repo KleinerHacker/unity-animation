@@ -1,11 +1,10 @@
-using System;
 using System.Collections;
 using NUnit.Framework;
-using UnityAnimation.Runtime.animation.Scripts.Runtime.Utils;
+using UnityAnimation.Runtime.Projects.unity_animation.Scripts.Runtime.Utils;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace UnityAnimation.Test.animation.Scripts.Test
+namespace UnityAnimation.Test.Projects.unity_animation.Scripts.Test
 {
     public class AnimationTest
     {
