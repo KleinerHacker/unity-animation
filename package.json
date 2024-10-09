@@ -1,6 +1,6 @@
 {
   "name": "org.pcsoft.animation",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "displayName": "Animation Extension",
   "description": "Provide a builder for animations based on Coroutines",
   "unity": "2021.3",
@@ -11,7 +11,7 @@
     "builder"
   ],
   "dependencies": {
-    "org.pcsoft.base": "1.1.0"
+    "org.pcsoft.base": "2.0.0-EA.01"
   },
   "author": {
     "name": "Pfeiffer C Soft",
