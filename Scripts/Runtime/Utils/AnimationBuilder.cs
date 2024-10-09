@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityAnimation.Runtime.animation.Scripts.Runtime.Types;
-using UnityBase.Runtime.@base.Scripts.Runtime;
+using UnityAnimation.Runtime.Projects.unity_animation.Scripts.Runtime.Types;
+using UnityBase.Runtime.Projects.unity_base.Scripts.Runtime.Components;
 using UnityEngine;
 
-namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
+namespace UnityAnimation.Runtime.Projects.unity_animation.Scripts.Runtime.Utils
 {
     public sealed partial class AnimationBuilder
     {
@@ -16,7 +16,7 @@ namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Utils
 
         public static AnimationBuilder Create(AnimationType type = AnimationType.Scaled)
         {
-            return new AnimationBuilder(BehaviorSystem.GetHelper(), type);
+            return new AnimationBuilder(HelpBehavior.Instance, type);
         }
 
         private readonly MonoBehaviour _behaviour;

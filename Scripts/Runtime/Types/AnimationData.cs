@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace UnityAnimation.Runtime.animation.Scripts.Runtime.Types
+namespace UnityAnimation.Runtime.Projects.unity_animation.Scripts.Runtime.Types
 {
     public sealed class AnimationData
     {
