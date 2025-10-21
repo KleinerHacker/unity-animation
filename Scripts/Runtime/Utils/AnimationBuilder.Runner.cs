@@ -112,6 +112,16 @@ namespace UnityAnimation.Runtime.Projects.unity_animation.Scripts.Runtime.Utils
                     StartNext(stepIndex + 1, animationRunner, data);
                 }));
             }
+            else if (step is WaitUntilAnimationStep waitUntilStep)
+            {
+                animationRunner.Coroutine = Run(AnimationUtils.WaitUntil(data, waitUntilStep.Predicate, data =>
+                {
+                    waitUntilStep.OnFinished?.Invoke(data);
+                    if (animationRunner.IsStopped)
+                        return;
+                    StartNext(stepIndex + 1, animationRunner, data);   
+                }));
+            }
             else if (step is RunAllSecondsAnimationStep runAllSecStep)
             {
                 animationRunner.Coroutine = Run(AnimationUtils.RunAll(_type, runAllSecStep.Seconds, data, data =>

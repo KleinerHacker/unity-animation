@@ -147,6 +147,17 @@ namespace UnityAnimation.Runtime.Projects.unity_animation.Scripts.Runtime.Utils
             onFinished.Invoke(data);
         }
 
+        public static IEnumerator WaitUntil(AnimationData data, Predicate<AnimationData> predicate,
+            Action<AnimationData> onFinished)
+        {
+            while (!predicate(data))
+            {
+                yield return null;
+            }
+            
+            onFinished?.Invoke(data);
+        }
+
         public static IEnumerator RunAll(AnimationType type, float delay, AnimationData data, Action<AnimationData> onFinished, params Action<AnimationData>[] actions)
         {
             foreach (var action in actions)
