@@ -78,6 +78,16 @@ namespace UnityAnimation.Runtime.Projects.unity_animation.Scripts.Runtime.Utils
                 Frames = frames;
             }
         }
+        
+        private sealed class WaitUntilAnimationStep : AnimationStep
+        {
+            public Predicate<AnimationData> Predicate { get; }
+
+            public WaitUntilAnimationStep(Predicate<AnimationData> predicate, Action<AnimationData> onFinished) : base(onFinished)
+            {
+                Predicate = predicate;
+            }
+        }
 
         private sealed class RunAllSecondsAnimationStep : AnimationStep
         {
